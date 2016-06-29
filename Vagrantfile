@@ -17,7 +17,7 @@ Vagrant.configure(2) do |config|
     v.customize ["modifyvm", :id, "--cpuexecutioncap", "90"]
   end
 
-  config.vm.network "forwarded_port", guest: 9966, host: 9967
+  config.vm.network "forwarded_port", guest: 9966, host: 9966
 
   config.trigger.after :up do
     run_remote "docker run -e MYSQL_ROOT_PASSWORD=petclinic -de MYSQL_DATABASE=petclinic -p 3306:3306 mysql:5.7.8"
@@ -55,11 +55,12 @@ Vagrant.configure(2) do |config|
      curl -L https://github.com/docker/machine/releases/download/v0.6.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine
      chmod +x /usr/local/bin/docker-machine
 
-     # Change database to MYSQL and populate it
+
+     # Change database to MYSQL
      sudo cp -f /workspace/database-access.properties spring-petclinic/src/main/resources/spring/data-access.properties
      sudo cp -f /workspace/pom.xml spring-petclinic/pom.xml
 
-     # Install xvfb-docker
+     # Create dir for xvfb docker and set display
       sudo mkdir -p Docker/xvfb-container/
       echo "DISPLAY=172.17.0.3:0" >> /etc/environment
 
@@ -74,7 +75,7 @@ Vagrant.configure(2) do |config|
       sudo apt-get install -y unzip
       unzip chromedriver_linux64.zip && sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
 
-      #Install robotframework/python depencies
+      # Install robotframework/python depencies
       sudo pip3 install robotframework-databaselibrary
       sudo pip3 install pymysql
 
