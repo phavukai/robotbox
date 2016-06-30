@@ -17,13 +17,12 @@ Vagrant.configure(2) do |config|
     v.customize ["modifyvm", :id, "--cpuexecutioncap", "90"]
   end
 
-  config.vm.network "forwarded_port", guest: 9966, host: 9966
+  config.vm.network "forwarded_port", guest: 9966, host: 9967
 
   config.trigger.after :up do
     run_remote "docker run -e MYSQL_ROOT_PASSWORD=petclinic -de MYSQL_DATABASE=petclinic -p 3306:3306 mysql:5.7.8"
-    run_remote "cd Docker/xvfb-container/ && sudo docker build -t xvfb github.com/phavukai/xvfb_docker"
     run_remote  " cd Docker/xvfb-container/ && docker run -d xvfb "
-    run_remote "cd spring-petclinic && ./mvnw tomcat7:run & "
+    run_remote "cd spring-petclinic &&  ./mvnw tomcat7:run &"
 
   end
 
@@ -56,26 +55,28 @@ Vagrant.configure(2) do |config|
      chmod +x /usr/local/bin/docker-machine
 
 
-     # Change database to MYSQL
+     # Change database to MYSQL and populate it
      sudo cp -f /workspace/database-access.properties spring-petclinic/src/main/resources/spring/data-access.properties
      sudo cp -f /workspace/pom.xml spring-petclinic/pom.xml
 
-     # Create dir for xvfb docker and set display
+     # Make xvfb directroy and set display
       sudo mkdir -p Docker/xvfb-container/
+      cd Docker/xvfb-container/ && sudo docker build -t xvfb github.com/phavukai/xvfb_docker
       echo "DISPLAY=172.17.0.3:0" >> /etc/environment
 
 
       #Install google-chrome and webdriver
-      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      wget http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_51.0.2704.106-1_amd64.deb
       sudo dpkg -i --force-depends google-chrome-stable_current_amd64.deb
       LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-      wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
+      wget http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
       sudo apt-get update
       sudo apt-get install -f -y
       sudo apt-get install -y unzip
+
       unzip chromedriver_linux64.zip && sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
 
-      # Install robotframework/python depencies
+      #Install robotframework/python depencies
       sudo pip3 install robotframework-databaselibrary
       sudo pip3 install pymysql
 
