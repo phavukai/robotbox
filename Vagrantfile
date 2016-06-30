@@ -68,7 +68,6 @@ Vagrant.configure(2) do |config|
       #Install google-chrome and webdriver
       wget http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_51.0.2704.106-1_amd64.deb
       sudo dpkg -i --force-depends google-chrome-stable_51.0.2704.106-1_amd64.deb
-      LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
       wget http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
       sudo apt-get update
       sudo apt-get install -f -y
