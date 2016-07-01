@@ -17,7 +17,7 @@ Vagrant.configure(2) do |config|
     v.customize ["modifyvm", :id, "--cpuexecutioncap", "90"]
   end
 
-  config.vm.network "forwarded_port", guest: 9966, host: 9967
+  config.vm.network "forwarded_port", guest: 9966, host: 9966
 
   config.trigger.after :up do
     run_remote "docker run -e MYSQL_ROOT_PASSWORD=petclinic -de MYSQL_DATABASE=petclinic -p 3306:3306 mysql:5.7.8"
